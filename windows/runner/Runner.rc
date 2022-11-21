@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "flutter_currency_converter" "\0"
+            VALUE "FileDescription", "assignment1" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "flutter_currency_converter" "\0"
+            VALUE "InternalName", "assignment1" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2022 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "flutter_currency_converter.exe" "\0"
-            VALUE "ProductName", "flutter_currency_converter" "\0"
+            VALUE "OriginalFilename", "assignment1.exe" "\0"
+            VALUE "ProductName", "assignment1" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

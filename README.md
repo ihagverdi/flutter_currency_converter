@@ -1,4 +1,4 @@
-# flutter_currency_converter
+# assignment1
 
 A new Flutter project.
 

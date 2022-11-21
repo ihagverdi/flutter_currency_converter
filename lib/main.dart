@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-//import 'widgets/DropdownCurrency.dart';
-
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -56,13 +54,13 @@ class _MyHomeState extends State<MyHome> {
 
   double convertCurrency() {
     double result = 0;
-    // if (_amountController.text.isNotEmpty &&
-    //     (_amountController.text[_amountController.text.length - 1] != '.')) {
-    //   result = (currencies_base_usd[_dropDownValue_from]! *
-    //           double.parse(_amountController.text)) /
-    //       currencies_base_usd[_dropDownValue_to]!;
-    // }
-    return result;
+    if (_amountController.text.isNotEmpty &&
+        (_amountController.text[_amountController.text.length - 1] != '.')) {
+      result = (currencies_base_usd[_dropDownValue_from]! *
+              double.parse(_amountController.text)) /
+          currencies_base_usd[_dropDownValue_to]!;
+    }
+    return double.parse(result.toStringAsFixed(8));
   }
 
   @override
@@ -84,16 +82,16 @@ class _MyHomeState extends State<MyHome> {
               //color: Colors.red,
               child: TextFormField(
                 controller: _amountController,
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'[\d.?\d]{1}')),
-                  FilteringTextInputFormatter.deny(RegExp(r'\s')),
-                  //LengthLimitingTextInputFormatter(maxLength)
-                ],
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
                 decoration: InputDecoration(
                   labelText: 'Amount',
                   border: OutlineInputBorder(),
                 ),
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.allow(
+                      RegExp(r'[0-9]+[.]?[0-9]*')),
+                ],
               ),
             ),
             Container(
@@ -125,12 +123,27 @@ class _MyHomeState extends State<MyHome> {
                   labelStyle: TextStyle(fontSize: 20.0),
                   border: OutlineInputBorder(),
                   labelText: 'From',
-                  prefixIcon: Icon(
-                    Icons.euro, //dynamic with Curr.type
-                    color: Colors.green[400],
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image(
+                      height: 20.0,
+                      image: AssetImage(
+                        "images/$_dropDownValue_from.png",
+                      ),
+                    ),
                   ),
                 ),
               ),
+            ),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  var temp = _dropDownValue_from;
+                  _dropDownValue_from = _dropDownValue_to;
+                  _dropDownValue_to = temp;
+                });
+              },
+              icon: Icon(Icons.swap_vert),
             ),
             Container(
               //color: Colors.red,
@@ -161,22 +174,20 @@ class _MyHomeState extends State<MyHome> {
                   labelStyle: TextStyle(fontSize: 20.0),
                   border: OutlineInputBorder(),
                   labelText: 'To',
-                  prefixIcon: Icon(
-                    Icons.euro, //dynamic with Curr.type
-                    color: Colors.green[400],
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image(
+                      height: 20.0,
+                      image: AssetImage(
+                        "images/$_dropDownValue_to.png",
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
             Text(
               convertCurrency().toString(),
-              style: TextStyle(
-                fontSize: 40.0,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            Text(
-              _amountController.text,
               style: TextStyle(
                 fontSize: 40.0,
               ),
