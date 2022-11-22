@@ -1,0 +1,34 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "flutter_currency_converter",
+            "cwd": "$Recycle.Bin\\S-1-5-21-3400972622-68776569-4283031254-1001\\$RBQTIY6\\flutter_currency_converter",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "flutter_currency_converter (profile mode)",
+            "cwd": "$Recycle.Bin\\S-1-5-21-3400972622-68776569-4283031254-1001\\$RBQTIY6\\flutter_currency_converter",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "flutter_currency_converter (release mode)",
+            "cwd": "$Recycle.Bin\\S-1-5-21-3400972622-68776569-4283031254-1001\\$RBQTIY6\\flutter_currency_converter",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "Flutter (lib\\main.dart)",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib\\main.dart"
+        }
+    ]
+}

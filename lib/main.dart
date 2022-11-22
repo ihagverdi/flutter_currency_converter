@@ -1,3 +1,4 @@
+import '/screens/conversionList.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -36,6 +37,15 @@ class _MyHomeState extends State<MyHome> {
     'Swedish Krona': 0.094,
     'British Pound': 1.19,
   };
+  final currencies_abbr = {
+    'US Dollar': 'USD',
+    'Euro': 'EUR',
+    'South Korean Wan': 'KRW',
+    'Chinese Yuan': 'CNY',
+    'Japanese Yen': 'JPY',
+    'Swedish Krona': 'SEK',
+    'British Pound': 'GBP',
+  };
   String _dropDownValue_from = '';
   String _dropDownValue_to = '';
   final _amountController = TextEditingController();
@@ -52,15 +62,26 @@ class _MyHomeState extends State<MyHome> {
     });
   }
 
+  double calculateCurrency(
+      String inputAmount, String curr_from, String curr_to) {
+    double result =
+        (currencies_base_usd[curr_from]! * double.parse(inputAmount)) /
+            currencies_base_usd[curr_to]!;
+    return result;
+  }
+
   double convertCurrency() {
     double result = 0;
-    if (_amountController.text.isNotEmpty &&
-        (_amountController.text[_amountController.text.length - 1] != '.')) {
-      result = (currencies_base_usd[_dropDownValue_from]! *
-              double.parse(_amountController.text)) /
-          currencies_base_usd[_dropDownValue_to]!;
+    if (_amountController.text.isNotEmpty) {
+      String inputAmount = _amountController.text;
+      int endIndex = inputAmount.length - 1;
+      if (inputAmount[endIndex] == '.') {
+        inputAmount = inputAmount.substring(0, endIndex);
+      }
+      result = calculateCurrency(
+          inputAmount, _dropDownValue_from, _dropDownValue_to);
     }
-    return double.parse(result.toStringAsFixed(8));
+    return double.parse(result.toStringAsFixed(5));
   }
 
   @override
@@ -72,6 +93,19 @@ class _MyHomeState extends State<MyHome> {
         centerTitle: true,
         backgroundColor: Colors.green[400],
         foregroundColor: Colors.white,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.currency_exchange),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) {
+                  return ConversionList();
+                }),
+              );
+            },
+          ),
+        ],
       ),
       body: Container(
         margin: EdgeInsets.only(top: 10.0),
@@ -84,6 +118,7 @@ class _MyHomeState extends State<MyHome> {
                 controller: _amountController,
                 keyboardType:
                     const TextInputType.numberWithOptions(decimal: true),
+                style: TextStyle(fontSize: 20.0),
                 decoration: InputDecoration(
                   labelText: 'Amount',
                   border: OutlineInputBorder(),
@@ -104,8 +139,10 @@ class _MyHomeState extends State<MyHome> {
                       (e) => DropdownMenuItem(
                         child: Text(
                           e,
-                          style:
-                              TextStyle(fontSize: 20.0, color: Colors.black87),
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.black87,
+                          ),
                         ),
                         value: e,
                       ),
@@ -125,9 +162,9 @@ class _MyHomeState extends State<MyHome> {
                   labelText: 'From',
                   prefixIcon: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Image(
-                      height: 20.0,
-                      image: AssetImage(
+                    child: CircleAvatar(
+                      backgroundColor: Colors.green[50],
+                      backgroundImage: AssetImage(
                         "images/$_dropDownValue_from.png",
                       ),
                     ),
@@ -136,6 +173,8 @@ class _MyHomeState extends State<MyHome> {
               ),
             ),
             IconButton(
+              color: Colors.green[400],
+              iconSize: 40.0,
               onPressed: () {
                 setState(() {
                   var temp = _dropDownValue_from;
@@ -143,7 +182,7 @@ class _MyHomeState extends State<MyHome> {
                   _dropDownValue_to = temp;
                 });
               },
-              icon: Icon(Icons.swap_vert),
+              icon: Icon(Icons.swap_vert_circle),
             ),
             Container(
               //color: Colors.red,
@@ -176,9 +215,9 @@ class _MyHomeState extends State<MyHome> {
                   labelText: 'To',
                   prefixIcon: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Image(
-                      height: 20.0,
-                      image: AssetImage(
+                    child: CircleAvatar(
+                      backgroundColor: Colors.green[50],
+                      backgroundImage: AssetImage(
                         "images/$_dropDownValue_to.png",
                       ),
                     ),
@@ -187,11 +226,14 @@ class _MyHomeState extends State<MyHome> {
               ),
             ),
             Text(
-              convertCurrency().toString(),
-              style: TextStyle(
-                fontSize: 40.0,
-              ),
+              convertCurrency().toString() +
+                  " " +
+                  currencies_abbr[_dropDownValue_to]!,
               textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black87,
+                fontSize: 30.0,
+              ),
             ),
           ],
         ),
