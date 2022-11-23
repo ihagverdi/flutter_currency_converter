@@ -225,6 +225,7 @@ class _MyHomeState extends State<MyHome> {
                 ),
               ),
             ),
+            SizedBox(height: 20.0),
             Text(
               convertCurrency().toString() +
                   " " +

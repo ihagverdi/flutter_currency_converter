@@ -1,8 +1,18 @@
 import "package:flutter/material.dart";
 import 'package:country_icons/country_icons.dart';
 
-class ConversionList extends StatelessWidget {
+class ConversionList extends StatefulWidget {
   ConversionList({super.key});
+
+  @override
+  State<ConversionList> createState() => _ConversionListState();
+}
+
+class _ConversionListState extends State<ConversionList> {
+  String _dropDownValue_from = '';
+  _ConversionListState() {
+    _dropDownValue_from = 'US Dollar';
+  }
   final currencies_base_usd = {
     'US Dollar': 1.0,
     'Euro': 1.03,
@@ -12,6 +22,7 @@ class ConversionList extends StatelessWidget {
     'Swedish Krona': 0.094,
     'British Pound': 1.19,
   };
+
   final currencies_abbr = {
     'US Dollar': 'USD',
     'Euro': 'EUR',
@@ -21,6 +32,7 @@ class ConversionList extends StatelessWidget {
     'Swedish Krona': 'SEK',
     'British Pound': 'GBP',
   };
+
   double calculateCurrency(
       String inputAmount, String curr_from, String curr_to) {
     double result =
@@ -31,21 +43,63 @@ class ConversionList extends StatelessWidget {
 
   List<Widget> ListTileMaker(Map<String, double> currencies_base_usd) {
     List<Widget> l = [];
+    l.add(Container(
+      padding: EdgeInsets.all(10.0),
+      child: DropdownButtonFormField(
+        value: _dropDownValue_from,
+        items: currencies_base_usd.keys
+            .map(
+              (e) => DropdownMenuItem(
+                child: Text(
+                  e,
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.black87,
+                  ),
+                ),
+                value: e,
+              ),
+            )
+            .toList(),
+        onChanged: (val) {
+          setState(() {
+            _dropDownValue_from = val as String;
+          });
+        },
+        icon: Icon(Icons.arrow_drop_down_circle, color: Colors.green[400]),
+        dropdownColor: Colors.green[50],
+        decoration: InputDecoration(
+          labelStyle: TextStyle(
+            fontSize: 20.0,
+          ),
+          border: OutlineInputBorder(),
+          labelText: 'Base Currency',
+          prefixIcon: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CircleAvatar(
+              backgroundColor: Colors.green[50],
+              backgroundImage: AssetImage(
+                "images/$_dropDownValue_from.png",
+              ),
+            ),
+          ),
+        ),
+      ),
+    ));
+
     currencies_base_usd.forEach((key, value) => l.add(Container(
           padding: EdgeInsets.all(8.0),
           child: ListTile(
-            tileColor:
-                key == "US Dollar" ? Colors.green[200] : Colors.green[50],
+            tileColor: Colors.green[50],
             leading: CircleAvatar(
-              backgroundColor:
-                  key == "US Dollar" ? Colors.green[200] : Colors.green[50],
+              backgroundColor: Colors.green[50],
               backgroundImage: AssetImage(
                 "images/$key.png",
               ),
             ),
             title: Text("${key}", style: TextStyle(fontSize: 20.0)),
             trailing: Text(
-              '${calculateCurrency('1', 'US Dollar', key).toStringAsFixed(5)} ${currencies_abbr[key]}',
+              '${calculateCurrency('1', _dropDownValue_from, key).toStringAsFixed(5)} ${currencies_abbr[key]}',
             ),
           ),
         )));
