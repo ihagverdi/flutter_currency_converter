@@ -21,6 +21,14 @@ class ConversionList extends StatelessWidget {
     'Swedish Krona': 'SEK',
     'British Pound': 'GBP',
   };
+  double calculateCurrency(
+      String inputAmount, String curr_from, String curr_to) {
+    double result =
+        (currencies_base_usd[curr_from]! * double.parse(inputAmount)) /
+            currencies_base_usd[curr_to]!;
+    return result;
+  }
+
   List<Widget> ListTileMaker(Map<String, double> currencies_base_usd) {
     List<Widget> l = [];
     currencies_base_usd.forEach((key, value) => l.add(Container(
@@ -37,7 +45,7 @@ class ConversionList extends StatelessWidget {
             ),
             title: Text("${key}", style: TextStyle(fontSize: 20.0)),
             trailing: Text(
-              '$value ${currencies_abbr[key]}',
+              '${calculateCurrency('1', 'US Dollar', key).toStringAsFixed(5)} ${currencies_abbr[key]}',
             ),
           ),
         )));
