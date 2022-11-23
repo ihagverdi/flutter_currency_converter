@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import 'package:country_icons/country_icons.dart';
 
 class ConversionList extends StatefulWidget {
   ConversionList({super.key});
