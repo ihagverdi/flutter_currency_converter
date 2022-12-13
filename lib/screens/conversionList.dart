@@ -2,38 +2,37 @@ import 'package:assignment1/classes/currency.dart';
 import "package:flutter/material.dart";
 
 class ConversionList extends StatefulWidget {
-  ConversionList({super.key});
+  final Currency myCurrency;
+  String localCurrency;
+  ConversionList(
+      {super.key, required this.myCurrency, required this.localCurrency});
 
   @override
   State<ConversionList> createState() => _ConversionListState();
 }
 
 class _ConversionListState extends State<ConversionList> {
-  Currency currencies_base_usd = Currency();
+  List<DropdownMenuItem<String>> myItems() {
+    List<DropdownMenuItem<String>> result = [];
+    widget.myCurrency.symbols.forEach((key, value) {
+      result.add(DropdownMenuItem(
+        value: key,
+        child: Text(value),
+      ));
+    });
+    return result;
+  }
 
-  List<Widget> ListTileMaker(Currency currencies_base_usd) {
-    List<Widget> l = [];
-    l.add(Container(
+  List<Widget> makeTiles() {
+    List<Widget> listPage = [];
+    listPage.add(Container(
       padding: EdgeInsets.all(10.0),
       child: DropdownButtonFormField(
-        value: currencies_base_usd.dropDownValue_from,
-        items: currencies_base_usd.currencies.keys
-            .map(
-              (e) => DropdownMenuItem(
-                child: Text(
-                  e,
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.black87,
-                  ),
-                ),
-                value: e,
-              ),
-            )
-            .toList(),
+        value: widget.localCurrency,
+        items: myItems(),
         onChanged: (val) {
           setState(() {
-            currencies_base_usd.dropDownValue_from = val as String;
+            widget.localCurrency = val as String;
           });
         },
         icon: Icon(Icons.arrow_drop_down_circle, color: Colors.green[400]),
@@ -44,42 +43,41 @@ class _ConversionListState extends State<ConversionList> {
           ),
           border: OutlineInputBorder(),
           labelText: 'Base Currency',
-          prefixIcon: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CircleAvatar(
-              backgroundColor: Colors.green[50],
-              backgroundImage: AssetImage(
-                "images/${currencies_base_usd.dropDownValue_from}.png",
-              ),
-            ),
+          prefixIcon: Container(
+            padding: EdgeInsets.all(8),
+            width: 50,
+            //color: Colors.red,
+            child: Image.asset(
+                'icons/currency/${widget.localCurrency.toLowerCase()}.png',
+                package: 'currency_icons'),
           ),
         ),
       ),
     ));
 
-    currencies_base_usd.currencies.forEach((key, value) {
-      currencies_base_usd.dropDownValue_to = key;
-      l.add(
+    widget.myCurrency.symbols.forEach((key, value) {
+      listPage.add(
         Container(
-          padding: EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(5),
           child: ListTile(
             tileColor: Colors.green[50],
-            leading: CircleAvatar(
-              backgroundColor: Colors.green[50],
-              backgroundImage: AssetImage(
-                "images/$key.png",
-              ),
+            leading: Container(
+              padding: EdgeInsets.all(8),
+              width: 50,
+              //color: Colors.red,
+              child: Image.asset('icons/currency/${key.toLowerCase()}.png',
+                  package: 'currency_icons'),
             ),
-            title: Text("${key}", style: TextStyle(fontSize: 20.0)),
+            title: Text("${value}", style: TextStyle(fontSize: 20.0)),
             trailing: Text(
-              '${currencies_base_usd.calculateCurrency('1').toStringAsFixed(5)} ${currencies_base_usd.currencies_abbr[key]}',
+              '${widget.myCurrency.convertCurrency('1', widget.localCurrency, key)} ${key}',
             ),
           ),
         ),
       );
     });
 
-    return l;
+    return listPage;
   }
 
   @override
@@ -91,15 +89,9 @@ class _ConversionListState extends State<ConversionList> {
         centerTitle: true,
         backgroundColor: Colors.green[400],
         foregroundColor: Colors.white,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
       ),
       body: ListView(
-        children: ListTileMaker(currencies_base_usd),
+        children: makeTiles(),
       ),
     );
   }
