@@ -6,11 +6,11 @@ import 'package:http/http.dart' as http;
 Future<Currency> fetchCurrency() async {
   final symbols = await http.get(
     Uri.parse('https://api.apilayer.com/fixer/symbols'),
-    headers: {'apikey': '23gTY5KS3uXDYzOChNdMGMXllKlwrOD3'},
+    headers: {'apikey': 'TblhhRo0xyygek77rfq3IfNJR8F8EUIA'},
   );
   final rates = await http.get(
     Uri.parse('https://api.apilayer.com/fixer/latest'),
-    headers: {'apikey': '23gTY5KS3uXDYzOChNdMGMXllKlwrOD3'},
+    headers: {'apikey': 'TblhhRo0xyygek77rfq3IfNJR8F8EUIA'},
   );
   if (symbols.statusCode == 200 && rates.statusCode == 200) {
     final symbolsJson = jsonDecode(symbols.body);

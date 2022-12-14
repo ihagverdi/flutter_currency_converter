@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'dart:async';
 
 class MyHome extends StatefulWidget {
   const MyHome({super.key});
@@ -17,7 +18,7 @@ class MyHome extends StatefulWidget {
 class _MyHomeState extends State<MyHome> {
   bool _pageLoading = true;
   late Currency myCurrency;
-  late Position myPosition;
+  late Position? myPosition;
   late List<Placemark> placemarks;
   final amountController = TextEditingController();
 
@@ -41,11 +42,11 @@ class _MyHomeState extends State<MyHome> {
 
   Future<void> fetchData() async {
     myCurrency = await fetchCurrency();
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (serviceEnabled) {
-      myPosition = await determinePosition();
+
+    myPosition = await determinePosition();
+    if (myPosition != null) {
       placemarks = await placemarkFromCoordinates(
-          myPosition.latitude, myPosition.longitude);
+          myPosition!.latitude, myPosition!.longitude);
       currFrom = getPositionCurrency();
       localCurrency = currFrom;
     } else {
@@ -104,11 +105,11 @@ class _MyHomeState extends State<MyHome> {
       ),
       body: _pageLoading == true
           ? Center(child: CircularProgressIndicator())
-          : buildPortrait(),
+          : buildHome(),
     );
   }
 
-  Widget buildPortrait() {
+  Widget buildHome() {
     return Container(
       margin: EdgeInsets.only(top: 10.0),
       child: ListView(
@@ -203,8 +204,10 @@ class _MyHomeState extends State<MyHome> {
           SizedBox(height: 20.0),
           Text(
             myCurrency
-                .convertCurrency(amountController.text, currFrom, currTo)
-                .toString(),
+                    .convertCurrency(amountController.text, currFrom, currTo)
+                    .toString() +
+                " " +
+                currTo,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.black87,
